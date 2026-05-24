@@ -5,10 +5,10 @@
 <header class="header">
   <div class="container nav">
     <div class="nav-left">
-      <a href="/blog" class="logo"
-        >Ramos<span class="logo-dot">.blog</span></a
-      >
-      <a href="/" class="back-link">← Portfólio</a>
+      <a href={`${import.meta.env.BASE_URL}/blog`} class="logo">
+        Ramos<span class="logo-dot">.blog</span>
+      </a>
+      <a href={import.meta.env.BASE_URL} class="back-link"> ← Portfólio </a>
     </div>
 
     <div class="search-wrap">
