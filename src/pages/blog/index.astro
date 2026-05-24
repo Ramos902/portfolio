@@ -49,11 +49,17 @@ for (const post of posts) {
                                         href={`/blog/${post.id}`}
                                         class="post-link"
                                     >
+                                        <div class="post-header-row">
+                                            <span class="post-id">
+                                                POST #
+                                                {String(
+                                                    post.data.postId,
+                                                ).padStart(3, "0")}
+                                            </span>
+                                            <span class="post-arrow">→</span>
+                                        </div>
                                         <div class="post-info">
                                             <span class="post-title">
-                                                <span class="post-id">
-                                                    #{post.data.postId} -{" "}
-                                                </span>
                                                 {post.data.title}
                                             </span>
                                             <span class="post-desc">
@@ -121,6 +127,8 @@ for (const post of posts) {
         padding: 120px 1.5rem 5rem;
     }
 
+    /* ─── Hero / cabeçalho ─────────────────────────────────────── */
+
     .blog-hero {
         margin-bottom: 4rem;
         padding-bottom: 2.5rem;
@@ -149,22 +157,44 @@ for (const post of posts) {
         line-height: 1.6;
     }
 
+    /* ─── Lista de posts ───────────────────────────────────────── */
+
     .blog-list {
         display: flex;
         flex-direction: column;
         gap: 3rem;
     }
 
+    /* ─── Grupo por mês ────────────────────────────────────────── */
+
     .month-label {
         font-family: monospace;
         font-size: 0.72rem;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--accent);
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0;
+        border-bottom: none;
+
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
+
+    /* linha decorativa que se estende após o label do mês */
+    .month-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+            to right,
+            color-mix(in srgb, var(--accent) 30%, transparent),
+            transparent
+        );
+    }
+
+    /* ─── Sem resultados ───────────────────────────────────────── */
 
     .no-results {
         font-family: monospace;
@@ -174,96 +204,201 @@ for (const post of posts) {
         padding: 3rem 0;
     }
 
+    /* ─── Lista de posts (ul) ──────────────────────────────────── */
+
     :global(.post-list) {
         list-style: none;
         padding: 0;
         margin: 0;
         display: flex;
         flex-direction: column;
+        gap: 0.65rem; /* espaço entre cards */
     }
+
+    /* ─── Card individual ──────────────────────────────────────── */
 
     :global(.post-item) {
-        border-bottom: 1px solid
-            color-mix(in srgb, var(--border) 50%, transparent);
+        position: relative;
+        background: color-mix(in srgb, var(--bg, #0d0d0d) 60%, transparent);
+        border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+        border-left: 3px solid var(--accent);
+        border-radius: 4px;
+        overflow: hidden;
+        transition:
+            transform 0.15s ease,
+            border-left-color 0.15s ease,
+            background 0.15s ease;
     }
 
-    :global(.post-item:last-child) {
-        border-bottom: none;
+    /* textura scanline sutil */
+    :global(.post-item::before) {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.012) 2px,
+            rgba(255, 255, 255, 0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 0;
     }
+
+    /* linha de luz no topo que aparece no hover */
+    :global(.post-item::after) {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            to right,
+            color-mix(in srgb, var(--accent) 50%, transparent),
+            transparent
+        );
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        z-index: 1;
+    }
+
+    :global(.post-item:hover) {
+        transform: translateX(4px);
+        border-left-color: color-mix(in srgb, var(--accent) 150%, #fff);
+        background: color-mix(in srgb, var(--border) 15%, transparent);
+    }
+
+    :global(.post-item:hover::after) {
+        opacity: 1;
+    }
+
+    /* ─── Link wrapper ─────────────────────────────────────────── */
 
     :global(.post-link) {
+        position: relative;
+        z-index: 2;
         display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: 0.9rem 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 1.25rem 0.9rem 1.35rem;
         color: var(--text-primary);
-        transition: color 0.15s ease;
-        flex-wrap: wrap;
+        text-decoration: none;
     }
+
+    /* ─── Linha superior: número do post + seta ────────────────── */
+
+    :global(.post-header-row) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Número do post — ex: POST #005 */
+    :global(.post-id) {
+        font-family: monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        opacity: 0.8;
+        text-transform: uppercase;
+        transition: opacity 0.15s;
+    }
+
+    :global(.post-item:hover .post-id) {
+        opacity: 1;
+    }
+
+    /* seta → no canto direito */
+    :global(.post-arrow) {
+        font-family: monospace;
+        font-size: 0.75rem;
+        color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+        transition:
+            color 0.15s ease,
+            transform 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    :global(.post-item:hover .post-arrow) {
+        color: var(--accent);
+        transform: translateX(3px);
+    }
+
+    /* ─── Área de texto ────────────────────────────────────────── */
 
     :global(.post-info) {
         display: flex;
         flex-direction: column;
         gap: 0.3rem;
-        flex: 1;
     }
 
+    /* título com Playfair para contrastar com o monospace */
     :global(.post-title) {
-        font-family: "Georgia", serif;
-        font-size: 1rem;
+        font-family: "Playfair Display", "Georgia", serif;
+        font-size: 0.97rem;
         font-weight: 400;
-        line-height: 1.4;
+        line-height: 1.35;
         color: var(--text-primary);
         transition: color 0.15s ease;
     }
 
-    :global(.post-id) {
-        font-family: "Georgia", serif;
+    :global(.post-item:hover .post-title) {
+        color: color-mix(in srgb, var(--text-primary) 85%, var(--accent));
     }
 
+    /* descrição */
     :global(.post-desc) {
         font-family: monospace;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         color: var(--text-muted);
-        line-height: 1.5;
+        line-height: 1.55;
         font-weight: 400;
         transition: color 0.15s ease;
     }
 
+    :global(.post-item:hover .post-desc) {
+        color: color-mix(in srgb, var(--text-muted) 80%, var(--accent));
+    }
+
+    /* ─── Tags ─────────────────────────────────────────────────── */
+
     :global(.post-tags) {
         display: flex;
-        gap: 6px;
-        flex-shrink: 0;
+        gap: 5px;
         flex-wrap: wrap;
-        padding-top: 2px;
+        margin-top: 0.7rem;
     }
 
     :global(.tag) {
         font-family: monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        transition: color 0.15s ease;
+        font-size: 0.62rem;
+        letter-spacing: 0.06em;
+        color: color-mix(in srgb, var(--text-muted) 70%, transparent);
+        background: color-mix(in srgb, var(--border) 30%, transparent);
+        border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+        border-radius: 2px;
+        padding: 2px 7px;
+        transition:
+            color 0.15s ease,
+            border-color 0.15s ease;
     }
 
-    :global(.post-link:hover .post-title) {
-        color: var(--accent);
+    :global(.post-item:hover .tag) {
+        color: color-mix(in srgb, var(--accent) 80%, transparent);
+        border-color: color-mix(in srgb, var(--accent) 25%, transparent);
     }
 
-    :global(.post-link:hover .post-desc) {
-        color: color-mix(in srgb, var(--text-muted) 80%, var(--accent));
-    }
-
-    :global(.post-link:hover .tag) {
-        color: color-mix(in srgb, var(--accent) 60%, transparent);
-    }
+    /* ─── Responsividade ───────────────────────────────────────── */
 
     @media (max-width: 600px) {
         :global(.post-tags) {
             display: none;
         }
     }
+
     @media (max-width: 768px) {
         .blog-main {
             padding-top: 130px;
