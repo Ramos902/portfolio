@@ -58,8 +58,8 @@ const ogUrl = Astro.url.href;
 				const isDark =
 					htmlTheme === "dark" || (!htmlTheme && systemDark);
 				favicon.href = isDark
-					? `${base}/favicon-dark.svg`
-					: `${base}/favicon-light.svg`;
+					? `/favicon-dark.svg`
+					: `/favicon-light.svg`;
 			}
 
 			// Roda na inicialização
