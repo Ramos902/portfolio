@@ -2,7 +2,7 @@
 postId: 4
 title: "Stack e Heap - Gerenciamento de memória em C"
 description: "Entendendo as regiões de memória RAM com diagramas em C."
-date: 2025-05-10
+date: 2026-05-10
 tags: ["C", "Memória", "Stack", "Heap", "Estruturas De Dados"]
 ---
 

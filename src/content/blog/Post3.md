@@ -2,7 +2,7 @@
 postId: 3
 title: "Registro | Anytech: IA no desenvolvimento de software"
 description: "Conteúdos apresentados em call com a equipe de desenvolvimento do dr.Jon."
-date: 2025-04-29
+date: 2026-04-29
 tags: ["RLLMs", "agentes", "RAG", "embeddings"]
 ---
 

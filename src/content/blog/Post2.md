@@ -2,7 +2,7 @@
 postId: 2
 title: "Impressora não conecta ao Wi-Fi - Guia de troubleshooting passo a passo"
 description: "Checklist sistemático para resolver problemas de conectividade Wi-Fi em redes corporativas."
-date: 2025-04-24
+date: 2026-04-24
 tags: ["Rede", "Suporte", "Infra-Estrutura", "Impressora"]
 ---
 

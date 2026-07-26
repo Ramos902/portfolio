@@ -2,7 +2,7 @@
 postId: 1
 title: "Store Procedures na Prática"
 description: "Uma introdução prática ao uso de Stored Procedures no MySQL, cobrindo desde conceitos básicos até um teste de performance real."
-date: 2025-04-20
+date: 2026-04-20
 tags: ["MySQL", "SQL", "Performance"]
 ---
 

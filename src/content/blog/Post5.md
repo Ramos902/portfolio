@@ -2,7 +2,7 @@
 postId: 5
 title: "Lista Simples em C - Estruturas Dinâmicas e Ponteiros"
 description: "Resumo sobre listas simples encadeadas em C, alocação dinâmica com malloc e manipulação de ponteiros."
-date: 2025-05-12
+date: 2026-05-12
 tags: ["C", "Estruturas De Dados", "Lista Encadeada", "Ponteiros"]
 ---
 
