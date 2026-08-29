@@ -23,6 +23,7 @@ const { Content } = await render(post);
         date={post.data.date}
         description={post.data.description}
         tags={post.data.tags}
+        slug={post.id}
     >
         <Content />
     </BlogPost>

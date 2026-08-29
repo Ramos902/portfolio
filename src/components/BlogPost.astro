@@ -1,12 +1,16 @@
 ---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import CommentForm from "./CommentForm.astro";
+
 interface Props {
   title: string;
   date: Date;
   description?: string;
   tags?: string[];
+  slug: string;
 }
 
-const { title, date, description, tags } = Astro.props;
+const { title, date, description, tags, slug } = Astro.props;
 ---
 
 <article class="post-wrapper">
@@ -46,10 +50,11 @@ const { title, date, description, tags } = Astro.props;
   <footer class="post-footer">
     <a href="/blog" class="back-link">&larr; Voltar ao blog</a>
   </footer>
+
+  <CommentForm postSlug={slug} />
 </article>
 
 <style>
-
   .post-wrapper {
     max-width: 800px;
     margin: 0 auto;
@@ -123,7 +128,7 @@ const { title, date, description, tags } = Astro.props;
     line-height: 1.8;
     font-size: 1.2em;
     word-wrap: break-word;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: "Times New Roman", Times, serif;
   }
 
   .post-content :global(h2),

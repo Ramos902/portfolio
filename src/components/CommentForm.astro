@@ -1,0 +1,226 @@
+---
+import { getCollection } from "astro:content";
+
+interface Props {
+    postSlug: string;
+}
+
+const { postSlug } = Astro.props;
+
+const allComments = await getCollection("comments");
+const postComments = allComments
+    .filter((c) => c.data.postSlug === postSlug)
+    .sort(
+        (a, b) => new Date(a.data.date).getTime() - new Date(b.data.date).getTime()
+    );
+---
+
+
+<section class="comments">
+    <h2>Comentários ({postComments.length})</h2>
+
+    {
+        postComments.map((c) => (
+            <div class="comment">
+                <strong>{c.data.author}</strong>
+                <p>{c.data.message}</p>
+            </div>
+        ))
+    }
+
+    <form id="comment-form" data-post-slug={postSlug}>
+        <input
+            type="text"
+            name="author"
+            placeholder="Seu nome"
+            required
+            maxlength="60"
+        />
+        <textarea
+            name="message"
+            placeholder="Seu comentário"
+            required
+            maxlength="1000"></textarea>
+        <!-- honeypot: campo invisível, bots preenchem, humanos não veem -->
+        <input
+            type="text"
+            name="website"
+            style="position:absolute; left:-9999px;"
+            tabindex="-1"
+            autocomplete="off"
+        />
+        <button type="submit">Enviar comentário</button>
+        <p id="comment-feedback"></p>
+    </form>
+</section>
+
+<style>
+    .comments {
+        max-width: 720px;
+        padding: 2rem 0;
+    }
+
+    .comments h2 {
+        font-family: Georgia, serif;
+        font-size: clamp(1.4rem, 3vw, 1.8rem);
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .comment {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+    }
+
+    .comment strong {
+        display: block;
+        font-family: monospace;
+        font-size: 0.78rem;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+    }
+
+    .comment p {
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .no-comments {
+        font-family: monospace;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+    }
+
+    #comment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .field label {
+        font-family: monospace;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--text-muted);
+    }
+
+    #comment-form input[type="text"],
+    #comment-form textarea {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.7rem 0.9rem;
+        font-family: Inter, sans-serif;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        resize: vertical;
+        transition: border-color 0.2s ease;
+    }
+
+    #comment-form input[type="text"]:focus,
+    #comment-form textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+    #comment-form input[type="text"]::placeholder,
+    #comment-form textarea::placeholder {
+        color: var(--text-muted);
+    }
+
+    .honeypot {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    #comment-form button {
+        align-self: flex-start;
+        background: var(--accent);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 6px;
+        padding: 0.7rem 1.6rem;
+        font-family: monospace;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        transition: box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    #comment-form button:hover {
+        box-shadow: 0 0 12px var(--accent-glow);
+        transform: translateY(-1px);
+    }
+
+    #comment-feedback {
+        font-family: monospace;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        min-height: 1em;
+    }
+
+    #comment-feedback.success {
+        color: var(--accent);
+    }
+
+    #comment-feedback.error {
+        color: var(--accent);
+    }
+</style>
+
+<script>
+    const WORKER_URL = "https://SEU-WORKER.workers.dev/comments";
+
+    const form = document.getElementById("comment-form") as HTMLFormElement;
+    const feedback = document.getElementById("comment-feedback")!;
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+
+        feedback.textContent = "Enviando...";
+
+        try {
+            const res = await fetch(WORKER_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    postSlug: form.dataset.postSlug,
+                    author: data.author,
+                    message: data.message,
+                    website: data.website, // honeypot
+                }),
+            });
+
+            if (!res.ok) throw new Error("Falha no envio");
+
+            feedback.textContent =
+                "Comentário enviado! Ele aparece em alguns minutos.";
+            form.reset();
+        } catch (err) {
+            feedback.textContent = "Erro ao enviar. Tente novamente.";
+        }
+    });
+</script>
