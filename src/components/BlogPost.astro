@@ -1,4 +1,6 @@
 ---
+import Comments from "./Comments.astro";
+
 interface Props {
   title: string;
   date: Date;
@@ -42,6 +44,8 @@ const { title, date, description, tags } = Astro.props;
   <div class="post-content">
     <slot />
   </div>
+
+  <Comments />
 
   <footer class="post-footer">
     <a href="/blog" class="back-link">&larr; Voltar ao blog</a>

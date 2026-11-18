@@ -1,0 +1,73 @@
+<section class="comments-section" aria-label="Comentários">
+  <h2 class="comments-heading">Comentários</h2>
+  <div id="giscus-container"></div>
+</section>
+
+<script is:inline>
+  (function () {
+    const container = document.getElementById("giscus-container");
+    if (!container) return;
+
+    function getGiscusTheme() {
+      const htmlTheme = document.documentElement.getAttribute("data-theme");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = htmlTheme === "dark" || (!htmlTheme && systemDark);
+      return isDark ? "transparent_dark" : "light";
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://giscus.app/client.js";
+    script.setAttribute("data-repo", "Ramos902/portfolio");
+    script.setAttribute("data-repo-id", "R_kgDOSGo9Bw");
+    script.setAttribute("data-category", "General");
+    script.setAttribute("data-category-id", "DIC_kwDOSGo9B84DLYxe");
+    script.setAttribute("data-mapping", "pathname");
+    script.setAttribute("data-strict", "0");
+    script.setAttribute("data-reactions-enabled", "1");
+    script.setAttribute("data-emit-metadata", "0");
+    script.setAttribute("data-input-position", "top");
+    script.setAttribute("data-theme", getGiscusTheme());
+    script.setAttribute("data-lang", "pt");
+    script.setAttribute("data-loading", "lazy");
+    script.setAttribute("crossorigin", "anonymous");
+    script.async = true;
+
+    container.appendChild(script);
+
+    function syncGiscusTheme() {
+      const iframe = document.querySelector("iframe.giscus-frame");
+      if (!iframe || !iframe.contentWindow) return;
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: getGiscusTheme() } } },
+        "https://giscus.app"
+      );
+    }
+
+    const observer = new MutationObserver(syncGiscusTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", syncGiscusTheme);
+  })();
+</script>
+
+<style>
+  .comments-section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .comments-heading {
+    font-family: monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+</style>
